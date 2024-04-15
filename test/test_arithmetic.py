@@ -10,11 +10,11 @@ import itertools
 import logging
 import unittest
 
-import crypten
+import crypten_eloise
 import torch
 import torch.nn.functional as F
-from crypten.common.tensor_types import is_float_tensor
-from crypten.mpc.primitives import ArithmeticSharedTensor
+from crypten_eloise.common.tensor_types import is_float_tensor
+from crypten_eloise.mpc.primitives import ArithmeticSharedTensor
 from test.multiprocess_test_case import get_random_test_tensor, MultiProcessTestCase
 
 
@@ -27,7 +27,7 @@ class TestArithmetic(MultiProcessTestCase):
         super().setUp()
         # We don't want the main process (rank -1) to initialize the communcator
         if self.rank >= 0:
-            crypten.init()
+            crypten_eloise.init()
 
     def _check(self, encrypted_tensor, reference, msg, dst=None, tolerance=None):
         if tolerance is None:

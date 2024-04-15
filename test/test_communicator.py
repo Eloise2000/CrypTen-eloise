@@ -7,15 +7,15 @@
 
 import unittest
 
-import crypten
-import crypten.communicator as comm
+import crypten_eloise
+import crypten_eloise.communicator as comm
 import numpy
 import torch
 import torch.distributed as dist
 import torch.nn as nn
 import torch.nn.functional as F
-from crypten.common import serial
-from crypten.config import cfg
+from crypten_eloise.common import serial
+from crypten_eloise.config import cfg
 from test.multiprocess_test_case import get_random_test_tensor, MultiProcessTestCase
 
 
@@ -295,8 +295,8 @@ class TestCommunicator:
 
         # Test initialization using crypten.init()
         name = f"init_{comm.get().get_rank()}"
-        crypten.uninit()
-        crypten.init(party_name=name)
+        crypten_eloise.uninit()
+        crypten_eloise.init(party_name=name)
         self.assertEqual(comm.get().get_name(), f"init_{comm.get().get_rank()}")
 
         # Test failure on bad input
@@ -324,7 +324,7 @@ class TestCommunicatorMultiProcess(TestCommunicator, MultiProcessTestCase):
         # Test send / recv:
         for size in sizes:
             tensor = get_random_test_tensor(size=size, is_float=False)
-            crypten.reset_communication_stats()
+            crypten_eloise.reset_communication_stats()
 
             # Send forward, receive backward
             dst = (self.rank + 1) % self.world_size
@@ -345,7 +345,7 @@ class TestCommunicatorMultiProcess(TestCommunicator, MultiProcessTestCase):
             for op in ops:
                 tensor = get_random_test_tensor(size=size, is_float=False)
                 nbytes = tensor.numel() * 8
-                crypten.reset_communication_stats()
+                crypten_eloise.reset_communication_stats()
 
                 # Setup op-specific kwargs / inputs
                 args = ()
@@ -366,7 +366,7 @@ class TestCommunicatorMultiProcess(TestCommunicator, MultiProcessTestCase):
                 self.assertEqual(comm.get().comm_bytes, reference)
 
         # Test reset_communication_stats
-        crypten.reset_communication_stats()
+        crypten_eloise.reset_communication_stats()
         self.assertEqual(comm.get().comm_rounds, 0)
         self.assertEqual(comm.get().comm_bytes, 0)
 

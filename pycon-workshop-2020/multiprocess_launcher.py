@@ -15,7 +15,7 @@ import multiprocessing
 import os
 import uuid
 
-import crypten
+import crypten_eloise
 
 
 class MultiProcessLauncher:
@@ -40,7 +40,7 @@ class MultiProcessLauncher:
             )
             self.processes.append(process)
 
-        if crypten.mpc.ttp_required():
+        if crypten_eloise.mpc.ttp_required():
             ttp_process = multiprocessing.Process(
                 target=self.__class__._run_process,
                 name="TTP",
@@ -48,7 +48,7 @@ class MultiProcessLauncher:
                     world_size,
                     world_size,
                     env,
-                    crypten.mpc.provider.TTPServer,
+                    crypten_eloise.mpc.provider.TTPServer,
                     None,
                 ),
             )
@@ -61,7 +61,7 @@ class MultiProcessLauncher:
         os.environ["RANK"] = str(rank)
         orig_logging_level = logging.getLogger().level
         logging.getLogger().setLevel(logging.INFO)
-        crypten.init()
+        crypten_eloise.init()
         logging.getLogger().setLevel(orig_logging_level)
         if fn_args is None:
             run_process_fn()

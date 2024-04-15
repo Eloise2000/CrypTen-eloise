@@ -7,8 +7,8 @@
 
 import unittest
 
-import crypten
-import crypten.nn.tensorboard as tensorboard
+import crypten_eloise
+import crypten_eloise.nn.tensorboard as tensorboard
 from test.multiprocess_test_case import MultiProcessTestCase
 
 
@@ -18,15 +18,15 @@ class TestTensorboard(MultiProcessTestCase):
     def setUp(self) -> None:
         super().setUp()
         if self.rank >= 0:
-            crypten.init()
+            crypten_eloise.init()
 
     def test_tensorboard(self) -> None:
 
         # create small crypten model:
-        model = crypten.nn.Graph("input", "output")
-        model.add_module("intermediate1", crypten.nn.ReLU(), ["input"])
-        model.add_module("intermediate2", crypten.nn.Constant(1), [])
-        model.add_module("output", crypten.nn.Add(), ["intermediate1", "intermediate2"])
+        model = crypten_eloise.nn.Graph("input", "output")
+        model.add_module("intermediate1", crypten_eloise.nn.ReLU(), ["input"])
+        model.add_module("intermediate2", crypten_eloise.nn.Constant(1), [])
+        model.add_module("output", crypten_eloise.nn.Add(), ["intermediate1", "intermediate2"])
 
         # create tensorboard graph:
         tensorboard.graph(model)

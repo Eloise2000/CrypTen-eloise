@@ -7,7 +7,7 @@
 
 import sys
 
-import crypten
+import crypten_eloise
 import torch
 import torchvision
 from multiprocess_launcher import MultiProcessLauncher
@@ -22,10 +22,10 @@ ALICE = 0
 BOB = 1
 
 
-class LogisticRegression(crypten.nn.Module):
+class LogisticRegression(crypten_eloise.nn.Module):
     def __init__(self):
         super().__init__()
-        self.linear = crypten.nn.Linear(28 * 28, 10)
+        self.linear = crypten_eloise.nn.Linear(28 * 28, 10)
 
     def forward(self, x):
         x = x.view(-1, 28 * 28)
@@ -41,8 +41,8 @@ def encrypt_digits():
         download=True,
     )
     images, labels = take_samples(digits)
-    crypten.save_from_party(images, "/tmp/data/alice_images.pth", src=ALICE)
-    crypten.save_from_party(labels, "/tmp/data/bob_labels.pth", src=BOB)
+    crypten_eloise.save_from_party(images, "/tmp/data/alice_images.pth", src=ALICE)
+    crypten_eloise.save_from_party(labels, "/tmp/data/bob_labels.pth", src=BOB)
 
 
 def take_samples(digits, n_samples=100):
@@ -63,7 +63,7 @@ def take_samples(digits, n_samples=100):
 
 
 def train_model(model, X, y, epochs=10, learning_rate=0.05):
-    criterion = crypten.nn.CrossEntropyLoss()
+    criterion = crypten_eloise.nn.CrossEntropyLoss()
 
     for epoch in range(epochs):
         model.zero_grad()
@@ -77,8 +77,8 @@ def train_model(model, X, y, epochs=10, learning_rate=0.05):
 
 def jointly_train():
     encrypt_digits()
-    alice_images_enc = crypten.load_from_party("/tmp/data/alice_images.pth", src=ALICE)
-    bob_labels_enc = crypten.load_from_party("/tmp/data/bob_labels.pth", src=BOB)
+    alice_images_enc = crypten_eloise.load_from_party("/tmp/data/alice_images.pth", src=ALICE)
+    bob_labels_enc = crypten_eloise.load_from_party("/tmp/data/bob_labels.pth", src=BOB)
 
     model = LogisticRegression().encrypt()
     model = train_model(model, alice_images_enc, bob_labels_enc)

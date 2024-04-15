@@ -10,7 +10,7 @@ import unittest
 
 # from test.multiprocess_test_case import get_random_test_tensor
 
-import crypten
+import crypten_eloise
 import torch
 import torchvision
 from test.multiprocess_test_case import MultiProcessTestCase
@@ -30,7 +30,7 @@ class TestModels(MultiProcessTestCase):
 
     def setUp(self) -> None:
         super().setUp()
-        crypten.init()
+        crypten_eloise.init()
 
     def _check_modules(self, crypten_model, torchvision_model, msg):
         msg += " in modules."
@@ -68,7 +68,7 @@ class TestModels(MultiProcessTestCase):
 
             self.assertEqual(crypten_param.size(), torchvision_param.size(), msg)
             if pretrained:
-                if isinstance(crypten_param, crypten.CrypTensor):
+                if isinstance(crypten_param, crypten_eloise.CrypTensor):
                     crypten_param = crypten_param.get_plain_text()
                 self.assertTrue(
                     torch.allclose(crypten_param, torchvision_param, atol=1e-4)
@@ -86,7 +86,7 @@ class TestModels(MultiProcessTestCase):
                 crypten_param.size(), torchvision_param.size(), f"{msg}: {name} size"
             )
             if pretrained:
-                if isinstance(crypten_param, crypten.CrypTensor):
+                if isinstance(crypten_param, crypten_eloise.CrypTensor):
                     crypten_param = crypten_param.get_plain_text()
                 self.assertTrue(
                     torch.allclose(crypten_param, torchvision_param, atol=1e-4),
@@ -94,11 +94,11 @@ class TestModels(MultiProcessTestCase):
                 )
 
     def _check_model(self, model_name, *args, **kwargs):
-        crypten_model = getattr(crypten.models, model_name)(*args, **kwargs)
+        crypten_model = getattr(crypten_eloise.models, model_name)(*args, **kwargs)
         torchvision_model = getattr(torchvision.models, model_name)(*args, **kwargs)
 
         self.assertTrue(
-            isinstance(crypten_model, crypten.nn.Module),
+            isinstance(crypten_model, crypten_eloise.nn.Module),
             f"{model_name} crypten model is not a crypten.nn.Module",
         )
         self.assertTrue(

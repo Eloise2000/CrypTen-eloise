@@ -7,7 +7,7 @@
 
 import unittest
 
-import crypten.mpc.primitives.ot.baseOT as baseOT
+import crypten_eloise.mpc.primitives.ot.baseOT as baseOT
 from test.multiprocess_test_case import MultiProcessTestCase
 
 

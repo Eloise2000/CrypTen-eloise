@@ -430,9 +430,9 @@ def _run_experiment(args):
         import private_contextual_bandits as bandits
 
     learner_func = build_learner(args, bandits, download_mnist)
-    import crypten
+    import crypten_eloise
 
-    crypten.init()
+    crypten_eloise.init()
     learner_func()
 
 

@@ -8,11 +8,11 @@
 
 import unittest
 
-import crypten
-import crypten.communicator as comm
-import crypten.mpc as mpc
+import crypten_eloise
+import crypten_eloise.communicator as comm
+import crypten_eloise.mpc as mpc
 import torch
-from crypten.config import cfg
+from crypten_eloise.config import cfg
 
 
 @mpc.run_multiprocess(world_size=2)
@@ -34,10 +34,10 @@ def test_worldsize_func():
 def test_generator_func():
     device = torch.device("cpu")
     t0 = torch.randint(
-        -(2**63), 2**63 - 1, (1,), generator=crypten.generators["prev"][device]
+        -(2**63), 2**63 - 1, (1,), generator=crypten_eloise.generators["prev"][device]
     ).item()
     t1 = torch.randint(
-        -(2**63), 2**63 - 1, (1,), generator=crypten.generators["next"][device]
+        -(2**63), 2**63 - 1, (1,), generator=crypten_eloise.generators["next"][device]
     ).item()
     return (t0, t1)
 
@@ -52,10 +52,10 @@ def test_with_args_kwargs_func(first, *args, a=None, **kwargs):
 def test_rng_seeds_func():
     """Tests that rng seeds differ and coordinate where desired"""
     device = torch.device("cpu")
-    prev_seed = crypten.generators["prev"][device].initial_seed()
-    next_seed = crypten.generators["next"][device].initial_seed()
-    local_seed = crypten.generators["local"][device].initial_seed()
-    global_seed = crypten.generators["global"][device].initial_seed()
+    prev_seed = crypten_eloise.generators["prev"][device].initial_seed()
+    next_seed = crypten_eloise.generators["next"][device].initial_seed()
+    local_seed = crypten_eloise.generators["local"][device].initial_seed()
+    global_seed = crypten_eloise.generators["global"][device].initial_seed()
 
     return (prev_seed, next_seed, local_seed, global_seed)
 
@@ -78,7 +78,7 @@ class TestContext(unittest.TestCase):
         cfg.mpc.provider = "TFP"
 
         # This will cause the parent process to init with world-size 1
-        crypten.init()
+        crypten_eloise.init()
         self.assertEqual(comm.get().get_world_size(), 1)
 
         # This will fork 2 children which will have to init with world-size 2
