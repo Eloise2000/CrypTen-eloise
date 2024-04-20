@@ -52,12 +52,12 @@ class DistributedCommunicator(Communicator):
 
         # initialize process group:
         total_ws = self.world_size + 1 if init_ttp else self.world_size
-        # dist.init_process_group(
-        #     backend=self.distributed_backend,
-        #     init_method=self.rendezvous,
-        #     world_size=total_ws,
-        #     rank=self.rank,
-        # )
+        dist.init_process_group(
+            backend=self.distributed_backend,
+            init_method=self.rendezvous,
+            world_size=total_ws,
+            rank=self.rank,
+        )
         self.ttp_group = dist.new_group(list(range(total_ws)))
         if total_ws > 1:
             self.ttp_comm_group = dist.new_group([0, total_ws - 1])
